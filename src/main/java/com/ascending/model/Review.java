@@ -29,6 +29,7 @@ public class Review {
     private String description;
 
     @CreationTimestamp
+    @Column(name = "created_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private ZonedDateTime createdTime;
 
     @ManyToOne

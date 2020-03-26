@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "Authority")
 public class Authority {
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -97,7 +96,7 @@ public class Authority {
         try {
             str = objectMapper.writeValueAsString(this);
         }catch (JsonProcessingException jpe){
-            logger.error(jpe.getMessage());
+            jpe.printStackTrace();
         }
         return str;
     }

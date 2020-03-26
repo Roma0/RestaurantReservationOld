@@ -2,23 +2,15 @@ package com.ascending.repository;
 
 import com.ascending.AppInitializer;
 import com.ascending.model.Reservation;
-import com.ascending.model.Restaurant;
-import com.ascending.model.User;
 import com.ascending.util.HibernateUtil;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.rmi.CORBA.Util;
-import java.time.*;
-import java.util.TimeZone;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AppInitializer.class)

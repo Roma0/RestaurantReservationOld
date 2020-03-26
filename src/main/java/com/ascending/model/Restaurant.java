@@ -47,6 +47,9 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<Reservation> reservations;
 
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private Set<Review> reviews;
+
     public Long getId() {
         return id;
     }
@@ -107,8 +110,13 @@ public class Restaurant {
         return reservations;
     }
 
-    public void setReservations(Set<Reservation> reservations) {
-        this.reservations = reservations;
+    public Set<Review> getReviews() {
+        try {
+            int size = reviews.size();
+        }catch (Exception e){
+            return null;
+        }
+        return reviews;
     }
 
     @Override

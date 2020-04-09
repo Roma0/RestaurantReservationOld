@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
 @Repository
 public class UserDaoImpl implements UserDao {
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -34,7 +33,7 @@ public class UserDaoImpl implements UserDao {
             if(transaction != null)transaction.rollback();
             logger.error("Failure to save user.", e.getMessage());
         }
-        if(result != null)logger.debug(String.format("The user %s was inserted into table.", result.toString()));
+        if(result != null)logger.debug(String.format("The user %s was inserted into table.", result));
         return result;
     }
 
@@ -53,7 +52,7 @@ public class UserDaoImpl implements UserDao {
             if(transaction != null)transaction.rollback();
             logger.error("Failure to update user.", e.getMessage());
         }
-        if(result != null)logger.debug(String.format("The user %s was updated in database.", result.getName()));
+        if(result != null)logger.debug(String.format("The user %s was updated in database.", result));
         return result;
     }
 
@@ -70,13 +69,16 @@ public class UserDaoImpl implements UserDao {
             result = query.executeUpdate();
             transaction.commit();
             session.close();
-            logger.debug(String.format("Deleted the user by id=%s.", id));
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
             logger.error("Failure to delete user.", e.getMessage());
         }
 
-        return result >= 1 ? true:false;
+        if (result >= 1){
+            logger.debug(String.format("Deleted the user by id=%s.", id));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -91,7 +93,7 @@ public class UserDaoImpl implements UserDao {
             logger.error("Failure to get users.", e.getMessage());
         }
 
-        if(results != null)logger.debug("Got all %s users.", results.size());
+        if(results != null)logger.debug(String.format("Got all %s users.", results.size()));
         return results;
     }
 
@@ -107,9 +109,9 @@ public class UserDaoImpl implements UserDao {
             result = query.uniqueResult();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get the user by name or email.", e.getMessage());
+            logger.error("Failure to get the user by nameOrEmail.", e.getMessage());
         }
-        if (result != null) logger.debug(String.format("Got the user {%s} with name or email: %s.", result.toString(), nameOrEmail));
+        if (result != null) logger.debug(String.format("Got the user %s by nameOrEmail=%s.", result, nameOrEmail));
         return result;
     }
 
@@ -128,7 +130,12 @@ public class UserDaoImpl implements UserDao {
         }catch (Exception e){
             logger.error("Failure to get the user by credential.", e.getMessage());
         }
-        if (result != null) logger.debug(String.format("Got the user with Credential: %s and %s.", nameOrEmail, password));
+        if (result != null) {
+            logger.debug(
+                    String.format("Got the user %s with credential: nameOrEmail=%s and password=%s.",
+                            result, nameOrEmail, password)
+            );
+        }
         return result;
     }
 }

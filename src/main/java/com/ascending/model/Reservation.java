@@ -1,8 +1,11 @@
 package com.ascending.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -66,6 +69,7 @@ public class Reservation {
         this.id = id;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss a z", timezone = "UTC")
     public ZonedDateTime getCreatedTime() {
         return createdTime;
     }
@@ -74,6 +78,7 @@ public class Reservation {
         this.createdTime = createdTime;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss a z", timezone = "UTC")
     public ZonedDateTime getUpdateTime() {
         return updateTime;
     }
@@ -82,6 +87,7 @@ public class Reservation {
         this.updateTime = updateTime;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss a z", timezone = "UTC")
     public ZonedDateTime getReservedTime() {
         return reservedTime;
     }
@@ -106,16 +112,18 @@ public class Reservation {
         this.reservedStatus = reservedStatus;
     }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
+    @JsonProperty("restaurantId")
+    public Long getRestaurantId() {
+        return restaurant.getId();
     }
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
     }
 
-    public User getUser() {
-        return user;
+    @JsonProperty("userId")
+    public Long getUserId() {
+        return user.getId();
     }
 
     public void setUser(User user) {
@@ -125,6 +133,7 @@ public class Reservation {
     @Override
     public String toString(){
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         String str = null;
         try {
             str = objectMapper.writeValueAsString(this);

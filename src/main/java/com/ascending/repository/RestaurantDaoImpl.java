@@ -33,7 +33,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             logger.error("Failure to save restaurant.", e.getMessage());
         }
 
-        if (result != null) logger.debug(String.format("Inserted restaurant:{%s}.", result.toString()));
+        if (result != null) logger.debug(String.format("Inserted restaurant %s.", result.toString()));
         return result;
     }
 
@@ -54,7 +54,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             logger.error("Failure to update restaurant.", e.getMessage());
         }
 
-        if (result != null) logger.debug(String.format("Updated restaurant:{%s}.", result.getName()));
+        if (result != null) logger.debug(String.format("Updated restaurant %s.", result));
         return result;
     }
 
@@ -79,7 +79,6 @@ public class RestaurantDaoImpl implements RestaurantDao {
             logger.error("Failure to delete restaurant.", e.getMessage());
         }
 
-        //Todo check cascade deletion.
         if(result) logger.debug(String.format("Completed cascade deletion from table: restaurants, reservations, reviews by restaurant.id=%s.",
                 id));
         return result;
@@ -99,7 +98,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             logger.error(e.getMessage());
         }
 
-        if (results != null)logger.debug("Got '%s' restaurants.", results.size());
+        if (results != null)logger.debug(String.format("Got %s restaurants.", results.size()));
         return results;
     }
 
@@ -114,7 +113,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             logger.error("Failure to find restaurant.", e.getMessage());
         }
 
-        if (result != null) logger.debug(String.format("Got restaurant by id=%s.", id));
+        if (result != null) logger.debug(String.format("Got %s restaurant by id=%s.", result, id));
         return result;
     }
 
@@ -132,7 +131,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             logger.error("Failure to find restaurant.", e.getMessage());
         }
 
-        if(results != null)logger.debug(String.format("Got '%s' reservations by address:{%s}.", results.size(), address));
+        if(results != null)logger.debug(String.format("Got %s reservations by address=%s.", results.size(), address));
         return results;
     }
 
@@ -150,7 +149,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             logger.error("Failure to find restaurant.", e.getMessage());
         }
 
-        if(result != null)logger.debug(String.format("Got restaurant by name=%s.", name));
+        if(result != null)logger.debug(String.format("Got restaurant %s by name=%s.", result, name));
         return result;
     }
 
@@ -168,7 +167,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             logger.error("Failure to get restaurant with children.", e.getMessage());
         }
 
-        if(result != null)logger.debug(String.format("Got restaurant with reservations by restaurant.id=%s", id));
+        if(result != null)logger.debug(String.format("Got restaurant with reservations %s by restaurant.id=%s", result, id));
         return result;
     }
 
@@ -186,7 +185,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             logger.error(String.format("Failure to get restaurant with id: %s and it's reviews.", id), e.getMessage());
         }
 
-        if(result != null)logger.debug(String.format("Got restaurant with reviews by restaurant.id=%s", id));
+        if(result != null)logger.debug(String.format("Got restaurant with reviews %s by restaurant.id=%s", result, id));
         return result;
     }
 }

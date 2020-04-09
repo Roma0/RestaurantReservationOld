@@ -1,7 +1,9 @@
 package com.ascending.model;
 
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -56,6 +58,7 @@ public class Review {
         this.description = description;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss a z", timezone = "UTC")
     public ZonedDateTime getCreatedTime() {
         return createdTime;
     }
@@ -64,16 +67,18 @@ public class Review {
         this.createdTime = createdTime;
     }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
+    public Long getRestaurantId() {
+        return restaurant.getId();
     }
 
+    @JsonProperty("restaurantId")
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
     }
 
-    public User getUser() {
-        return user;
+    @JsonProperty("userId")
+    public Long getUserID() {
+        return user.getId();
     }
 
     public void setUser(User user) {
@@ -83,6 +88,7 @@ public class Review {
     @Override
     public String toString(){
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         String str = null;
         try{
             str = objectMapper.writeValueAsString(this);

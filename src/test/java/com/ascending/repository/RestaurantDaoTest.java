@@ -88,6 +88,7 @@ public class RestaurantDaoTest {
         Assert.assertEquals(restaurant.getName(), restaurantDao.getRestaurantByName(restaurant.getName()).getName());
     }
 
+    //Todo test Restaurant with Children
 //    @Test
 //    public void cascadeDeleteById(){
 //        logger.debug("Testing RestaurantDao.cascadeDeleteById() ...");

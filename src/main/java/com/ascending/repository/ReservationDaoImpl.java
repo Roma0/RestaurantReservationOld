@@ -32,7 +32,7 @@ public class ReservationDaoImpl implements ReservationDao{
             if(transaction != null)transaction.rollback();
             logger.error("Failure to save reservation.", e.getMessage());
         }
-        if (result != null)logger.debug(String.format("The reservation {%s} was inserted into database.", result.toString()));
+        if (result != null)logger.debug(String.format("The reservation %s was inserted into database.", result));
         return result;
     }
 
@@ -50,7 +50,7 @@ public class ReservationDaoImpl implements ReservationDao{
             if(transaction != null)transaction.rollback();
             logger.error("Failure to update reservation.", e.getMessage());
         }
-        if(result != null)logger.debug(String.format("The reservation {%s} was updated in database.", result.toString()));
+        if(result != null)logger.debug(String.format("The reservation %s was updated in database.", result));
         return result;
     }
 
@@ -67,12 +67,15 @@ public class ReservationDaoImpl implements ReservationDao{
             result = query.executeUpdate();
             transaction.commit();
             session.close();
-            logger.debug(String.format("The reservation with ID: %s. was deleted", id));
         }catch (Exception e){
             if(transaction != null)transaction.rollback();
             logger.error("Failure to delete reservation.", e.getMessage());
         }
-        return result >= 1 ? true:false;
+        if(result >= 1){
+            logger.debug(String.format("Deleted the reservation by id=%s", id));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -104,7 +107,7 @@ public class ReservationDaoImpl implements ReservationDao{
         }catch (Exception e){
             logger.error("Failure to get reservation.", e.getMessage());
         }
-        if(result != null)logger.debug(String.format("Got reservation by id=%s.", id));
+        if(result != null)logger.debug(String.format("Got reservation %s by id=%s.", result, id));
         return result;
     }
 }

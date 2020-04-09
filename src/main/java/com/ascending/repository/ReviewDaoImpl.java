@@ -34,7 +34,7 @@ public class ReviewDaoImpl implements ReviewDao {
             if(transaction != null)transaction.rollback();
             logger.error("Failure to save review.", e.getMessage());
         }
-        if (result != null)logger.debug("The review was inserted into database.");
+        if (result != null)logger.debug(String.format("The review %s was inserted into database.", result));
         return result;
     }
 
@@ -49,13 +49,16 @@ public class ReviewDaoImpl implements ReviewDao {
             result = session.createQuery(hql).setParameter("id", id).executeUpdate();
             transaction.commit();
             session.close();
-            logger.debug("The review was inserted into database.");
         }catch (Exception e){
             if (transaction != null)transaction.rollback();
             logger.error("Failure to delete review.", e.getMessage());
         }
 
-        return result >= 1 ? true:false;
+        if(result >= 1){
+            logger.debug(String.format("Deleted the review by id=%s.", id));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -85,7 +88,7 @@ public class ReviewDaoImpl implements ReviewDao {
         }catch (Exception e){
             logger.error("Failure to get review", e.getMessage());
         }
-        if(result != null) logger.debug(String.format("Got the review by id=%s.", id));
+        if(result != null) logger.debug(String.format("Got the review %s by id=%s.", result, id));
         return result;
     }
 
@@ -100,7 +103,7 @@ public class ReviewDaoImpl implements ReviewDao {
         }catch (Exception e){
             logger.error("Failure to get review by restaurant.", e.getMessage());
         }
-        if(results != null)logger.debug(String.format("Got the review by restaurant.id=%s.", id));
+        if(results != null)logger.debug(String.format("Got %s reviews by restaurant.id=%s.", results.size(), id));
         return results;
     }
 }

@@ -62,6 +62,7 @@ public class ReviewDaoTest {
 
     @Test
     public void getReviewById(){
+//        logger.debug(">>>>>>>>>>>" +  reviewDao.getReviewById(1L).toString());
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         Assert.assertEquals(id, reviewDao.getReviewById(id).getId());
     }

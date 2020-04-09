@@ -1,7 +1,9 @@
 package com.ascending.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -78,12 +80,14 @@ public class Restaurant {
         this.address = address;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss a")
     public LocalTime getOpenTime() { return openTime; }
 
     public void setOpenTime(LocalTime openTime) {
         this.openTime = openTime;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss a")
     public LocalTime getCloseTime() {
         return closeTime;
     }
@@ -122,6 +126,7 @@ public class Restaurant {
     @Override
     public String toString(){
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         String str = null;
         try {
             str = objectMapper.writeValueAsString(this);

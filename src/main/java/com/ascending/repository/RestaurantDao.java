@@ -8,7 +8,7 @@ import java.util.List;
 public interface RestaurantDao {
     Restaurant save(Restaurant restaurant);
     Restaurant update(Restaurant restaurant);
-    boolean delete(Restaurant restaurant);
+    boolean cascadeDeleteById(Long id);
     List<Restaurant> getRestaurants();
     Restaurant getRestaurantById(Long id);
     List<Restaurant> getRestaurantsByAddress(String address);

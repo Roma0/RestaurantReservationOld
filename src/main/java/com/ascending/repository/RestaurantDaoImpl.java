@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Repository
@@ -18,138 +19,174 @@ public class RestaurantDaoImpl implements RestaurantDao {
     @Override
     public Restaurant save(Restaurant restaurant) {
         Transaction transaction = null;
+        Restaurant result = null;
+
         try(Session session = sessionFactory.openSession()){
             transaction = session.beginTransaction();
             session.save(restaurant);
             transaction.commit();
-            logger.debug(String.format("The restaurant %s was insert into table.", restaurant.toString()));
-            return restaurant;
+            result = restaurant;
+            session.close();
         }
         catch (Exception e){
             if(transaction != null)transaction.rollback();
             logger.error("Failure to save restaurant.", e.getMessage());
         }
 
-        return null;
+        if (result != null) logger.debug(String.format("Inserted restaurant:{%s}.", result.toString()));
+        return result;
     }
 
     @Override
     public Restaurant update(Restaurant restaurant) {
         Transaction transaction = null;
+        Restaurant result = null;
+
         try(Session session = sessionFactory.openSession()){
             transaction = session.beginTransaction();
             session.saveOrUpdate(restaurant);
             transaction.commit();
-            logger.debug(String.format("The restaurant %s was saved or updated", restaurant.getName()));
-            return restaurant;
-        }catch (Exception e){
+            result = restaurant;
+            session.close();
+        }
+        catch (Exception e){
             if(transaction != null)transaction.rollback();
             logger.error("Failure to update restaurant.", e.getMessage());
         }
-        return null;
+
+        if (result != null) logger.debug(String.format("Updated restaurant:{%s}.", result.getName()));
+        return result;
     }
 
     @Override
-    public boolean delete(Restaurant restaurant) {
+    public boolean cascadeDeleteById(Long id) {
         Transaction transaction = null;
         boolean result = false;
 
         try (Session session = sessionFactory.openSession()){
-            transaction = session.beginTransaction();
-            restaurant = session.find(Restaurant.class, restaurant.getId());
-            session.delete(restaurant);
-            transaction.commit();
-            result = true;
-            logger.debug(String.format("A cascade deletion was completed to the restaurant with ID: %s.",
-                    restaurant.getId()));
+            Serializable serId = id;
+            Restaurant restaurant = session.load(Restaurant.class, serId);
+            if (restaurant != null) {
+                transaction = session.beginTransaction();
+                session.delete(restaurant);
+                transaction.commit();
+                result = true;
+            }
             session.close();
-        }catch (Exception e){
-            if(transaction != null)transaction.commit();
+        }
+        catch (Exception e){
+            if(transaction != null)transaction.rollback();
             logger.error("Failure to delete restaurant.", e.getMessage());
         }
+
+        //Todo check cascade deletion.
+        if(result) logger.debug(String.format("Completed cascade deletion from table: restaurants, reservations, reviews by restaurant.id=%s.",
+                id));
         return result;
     }
 
     @Override
     public List<Restaurant> getRestaurants() {
         String hql = "FROM Restaurant";
+        List<Restaurant> results = null;
 
         try(Session session = sessionFactory.openSession()){
             Query<Restaurant> query = session.createQuery(hql);
-            logger.debug("Get all restaurants");
-            return query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-        }catch (Exception e){
-            logger.error(e.getMessage());
-            return null;
+            results = query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+            session.close();
         }
+        catch (Exception e){
+            logger.error(e.getMessage());
+        }
+
+        if (results != null)logger.debug("Got '%s' restaurants.", results.size());
+        return results;
     }
 
     @Override
     public Restaurant getRestaurantById(Long id) {
         Restaurant result = null;
+
         try(Session session = sessionFactory.openSession()){
             result = session.find(Restaurant.class, id);
-            logger.debug(String.format("Got restaurant with id: %s from database.", id));
+            session.close();
         }catch (Exception e){
-            logger.error(String.format("Failure to find restaurant with id: %s.", id), e.getMessage());
+            logger.error("Failure to find restaurant.", e.getMessage());
         }
+
+        if (result != null) logger.debug(String.format("Got restaurant by id=%s.", id));
         return result;
     }
 
     @Override
     public List<Restaurant> getRestaurantsByAddress(String address) {
         String hql = "FROM Restaurant as r WHERE trim(lower(r.address)) = :address";
+        List<Restaurant> results = null;
 
         try (Session session = sessionFactory.openSession()){
             Query<Restaurant> query = session.createQuery(hql);
             query.setParameter("address", address.trim().toLowerCase());
-            return query.getResultList();
+            results = query.getResultList();
+            session.close();
         }catch (Exception e){
-            logger.error(String.format("Failure to find restaurant at the address: %s.", address), e.getMessage());
+            logger.error("Failure to find restaurant.", e.getMessage());
         }
 
-        return null;
+        if(results != null)logger.debug(String.format("Got '%s' reservations by address:{%s}.", results.size(), address));
+        return results;
     }
 
     @Override
     public Restaurant getRestaurantByName(String name) {
         String hql = "FROM Restaurant as r WHERE trim(lower(r.name)) = :name ";
+        Restaurant result = null;
 
         try (Session session = sessionFactory.openSession()){
             Query<Restaurant> query = session.createQuery(hql);
             query.setParameter("name", name.trim().toLowerCase());
-            return query.uniqueResult();
+            result = query.uniqueResult();
+            session.close();
         }catch (Exception e){
-            logger.error(String.format("Failure to find restaurant with name of %s.", name), e.getMessage());
+            logger.error("Failure to find restaurant.", e.getMessage());
         }
 
-        return null;
+        if(result != null)logger.debug(String.format("Got restaurant by name=%s.", name));
+        return result;
     }
 
     @Override
     public Restaurant getRestaurantWithReservations(Long id) {
         String hql = "FROM Restaurant as r LEFT JOIN FETCH r.reservations WHERE r.id = :id";
+        Restaurant result = null;
+
         try (Session session = sessionFactory.openSession()){
             Query<Restaurant> query = session.createQuery(hql);
             query.setParameter("id", id);
-            return query.uniqueResult();
+            result = query.uniqueResult();
+            session.close();
         }catch (Exception e){
-            logger.error(String.format("Failure to get restaurant with id: %s and it's reservations.", id), e.getMessage());
+            logger.error("Failure to get restaurant with children.", e.getMessage());
         }
-        return null;
+
+        if(result != null)logger.debug(String.format("Got restaurant with reservations by restaurant.id=%s", id));
+        return result;
     }
 
     @Override
     public Restaurant getRestaurantWithReviews(Long id) {
         String hql = "FROM Restaurant as r LEFT JOIN FETCH r.reviews WHERE r.id = :id";
+        Restaurant result = null;
 
         try (Session session = sessionFactory.openSession()){
             Query<Restaurant> query = session.createQuery(hql);
             query.setParameter("id", id);
-            return query.uniqueResult();
+            result = query.uniqueResult();
+            session.close();
         }catch (Exception e){
             logger.error(String.format("Failure to get restaurant with id: %s and it's reviews.", id), e.getMessage());
         }
-        return null;
+
+        if(result != null)logger.debug(String.format("Got restaurant with reviews by restaurant.id=%s", id));
+        return result;
     }
 }

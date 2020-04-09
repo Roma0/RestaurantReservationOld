@@ -1,9 +1,9 @@
 package com.ascending.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -47,14 +47,14 @@ public class Reservation {
     private int numPersons;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "reserved_status")
-    private ReservedStatus  reservedStatus;
+    @Column(name = "reserved_status", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private ReservedStatus  reservedStatus = ReservedStatus.PENDING;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

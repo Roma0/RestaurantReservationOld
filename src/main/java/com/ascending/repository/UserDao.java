@@ -7,8 +7,8 @@ import java.util.List;
 public interface UserDao {
     User save(User user);
     User update(User user);
-    boolean delete(User user);
+    boolean deleteById(Long id);
     List<User> getUsers();
-    User getUserByEmail(String email);
-    User getUserByCredential(String email, String password);
+    User getUserByNameOrEmail(String nameOrEmail);
+    User getUserByCredential(String nameOrEmail, String password);
 }

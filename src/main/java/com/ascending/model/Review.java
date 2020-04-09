@@ -32,11 +32,11 @@ public class Review {
     @Column(name = "created_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private ZonedDateTime createdTime;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -17,11 +17,11 @@ insert into users (name, first_name, last_name, email, password, phone) values
 commit;
 
 insert into reservations (reserved_time, num_persons, reserved_status, restaurant_id, user_id) values
-(('2020-03-24 11:30')::timestamp, 2, 1, 1, 1 ),
-(('2020-03-26 12:00')::timestamp, 3, 1, 2, 2 ),
-(('2020-03-28 19:00')::timestamp, 2, 0, 3, 3 ),
-(('2020-03-27 17:30')::timestamp, 2, 2, 1, 1 ),
-(('2020-03-27 17:30')::timestamp, 2, 1, 2, 1 )
+(('2020-03-24 11:30 America/New_York'), 2, 1, 1, 1 ),
+(('2020-03-26 12:00 America/New_York'), 3, 1, 2, 2 ),
+(('2020-03-28 19:00 America/New_York'), 2, 0, 3, 3 ),
+(('2020-03-27 17:30 America/New_York'), 2, 2, 1, 1 ),
+(('2020-03-27 17:30 America/New_York'), 2, 1, 2, 1 )
 ;
 commit;
 

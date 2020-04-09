@@ -21,98 +21,114 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User save(User user) {
         Transaction transaction = null;
+        User result = null;
 
         try(Session session = sessionFactory.openSession()){
             transaction = session.beginTransaction();
             session.save(user);
+            result = user;
             transaction.commit();
-            logger.debug(String.format("The user %s was insert into table.", user.toString()));
-            return user;
+            session.close();
         }
         catch (Exception e){
             if(transaction != null)transaction.rollback();
             logger.error("Failure to save user.", e.getMessage());
         }
-        return null;
+        if(result != null)logger.debug(String.format("The user %s was inserted into table.", result.toString()));
+        return result;
     }
 
     @Override
     public User update(User user) {
         Transaction transaction = null;
+        User result = null;
 
         try(Session session = sessionFactory.openSession()){
             transaction = session.beginTransaction();
             session.saveOrUpdate(user);
+            result = user;
             transaction.commit();
-            logger.debug(String.format("The user %s was updated", user.getName()));
-            return user;
+            session.close();
         }catch (Exception e){
             if(transaction != null)transaction.rollback();
             logger.error("Failure to update user.", e.getMessage());
         }
-        return null;
+        if(result != null)logger.debug(String.format("The user %s was updated in database.", result.getName()));
+        return result;
     }
 
     @Override
-    public boolean delete(User user) {
+    public boolean deleteById(Long id) {
         Transaction transaction = null;
-        boolean result = false;
+        String hql = "DELETE User AS u WHERE u.id = :id";
+        int result = 0;
 
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            user = session.find(User.class, user.getId());
-            session.delete(user);
-            result = true;
+            Query<User> query = session.createQuery(hql);
+            query.setParameter("id", id);
+            result = query.executeUpdate();
             transaction.commit();
             session.close();
-            logger.debug(String.format("A cascade deletion was completed to the user: %s.", user.getName()));
+            logger.debug(String.format("Deleted the user by id=%s.", id));
         } catch (Exception e) {
-            if (transaction != null) transaction.commit();
+            if (transaction != null) transaction.rollback();
             logger.error("Failure to delete user.", e.getMessage());
         }
-        return result;
+
+        return result >= 1 ? true:false;
     }
 
     @Override
     public List<User> getUsers() {
         String hql = "FROM User";
+        List<User> results = null;
         try(Session session = sessionFactory.openSession()){
             Query<User> query = session.createQuery(hql);
-            return query.getResultList();
+            results = query.getResultList();
+            session.close();
         }catch (Exception e){
-            logger.error(e.getMessage());
-            return null;
+            logger.error("Failure to get users.", e.getMessage());
         }
+
+        if(results != null)logger.debug("Got all %s users.", results.size());
+        return results;
     }
 
     @Override
-    public User getUserByEmail(String email) {
-        String hql = "FROM User as u WHERE lower(u.email) = :email ";
+    public User getUserByNameOrEmail(String nameOrEmail) {
+        String hql = "FROM User as u WHERE lower(u.name) = :name or lower(u.email) = :email";
+        User result = null;
 
         try (Session session = sessionFactory.openSession()){
             Query<User> query = session.createQuery(hql);
-            query.setParameter("email", email.toLowerCase());
-            logger.debug(String.format("Get the user with email: %s.", email));
-            return query.uniqueResult();
+            query.setParameter("name", nameOrEmail.toLowerCase());
+            query.setParameter("email", nameOrEmail.toLowerCase());
+            result = query.uniqueResult();
+            session.close();
         }catch (Exception e){
-            logger.error(String.format("Failure to get the user by email: %s.", email), e.getMessage());
+            logger.error("Failure to get the user by name or email.", e.getMessage());
         }
-        return null;
+        if (result != null) logger.debug(String.format("Got the user {%s} with name or email: %s.", result.toString(), nameOrEmail));
+        return result;
     }
 
     @Override
-    public User getUserByCredential(String email, String password) {
-        String hql = "FROM User as u WHERE lower(u.email) = :email and u.password = :password";
+    public User getUserByCredential(String nameOrEmail, String password) {
+        String hql = "FROM User as u WHERE (lower(u.name) = :name or lower(u.email) = :email) and u.password = :password";
+        User result = null;
 
         try (Session session = sessionFactory.openSession()){
             Query<User> query = session.createQuery(hql);
-            query.setParameter("email", email.toLowerCase());
+            query.setParameter("name", nameOrEmail.toLowerCase());
+            query.setParameter("email", nameOrEmail.toLowerCase());
             query.setParameter("password", password);
-            logger.debug(String.format("Get the user with Credential: %s and %s.", email, password));
-            return query.uniqueResult();
+            result = query.uniqueResult();
+            session.close();
         }catch (Exception e){
             logger.error("Failure to get the user by credential.", e.getMessage());
         }
-        return null;
+        if (result != null) logger.debug(String.format("Got the user with Credential: %s and %s.", nameOrEmail, password));
+        return result;
     }
 }

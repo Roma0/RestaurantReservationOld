@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -30,12 +31,12 @@ public class RestaurantDaoTest {
     private Restaurant restaurant;
     private Long id;
 
-//    @Autowired
-//    private ReservationDao reservationDao;
-//    @Autowired
-//    private ReviewDao reviewDao;
-//    private Reservation reservation;
-//    private Review review;
+    @Autowired
+    private ReservationDao reservationDao;
+    @Autowired
+    private ReviewDao reviewDao;
+    private Reservation reservation;
+    private Review review;
 
 
     @Before
@@ -88,10 +89,11 @@ public class RestaurantDaoTest {
         Assert.assertEquals(restaurant.getName(), restaurantDao.getRestaurantByName(restaurant.getName()).getName());
     }
 
-    //Todo test Restaurant with Children
+//    //Todo test Restaurant with Children
 //    @Test
 //    public void cascadeDeleteById(){
-//        logger.debug("Testing RestaurantDao.cascadeDeleteById() ...");
+//        logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
+//        reservation = new Reservation(ZonedDateTime.now(),)
 //        Reservation reservation = new Reservation();
 //    }
 

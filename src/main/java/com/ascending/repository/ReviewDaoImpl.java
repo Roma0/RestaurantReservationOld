@@ -92,18 +92,34 @@ public class ReviewDaoImpl implements ReviewDao {
         return result;
     }
 
+//    @Override
+//    public List<Review> getReviewsByRestaurantId(Long id) {
+//        String hql = "FROM Review AS re WHERE re.restaurant.id = :id";
+//        List<Review> results = null;
+//
+//        try (Session session = sessionFactory.openSession()){
+//            results = (List<Review>) session.createQuery(hql).setParameter("id", id).getResultList();
+//            session.close();
+//        }catch (Exception e){
+//            logger.error("Failure to get review by restaurant.", e.getMessage());
+//        }
+//        if(results != null)logger.debug(String.format("Got %s reviews by restaurant.id=%s.", results.size(), id));
+//        return results;
+//    }
+
     @Override
-    public List<Review> getReviewsByRestaurantId(Long id) {
-        String hql = "FROM Review AS re WHERE re.restaurant.id = :id";
+    public List<Review> getReviewsByUserId(Long id) {
+        String hql = "FROM Review AS r WHERE r.user.id = :id";
         List<Review> results = null;
 
         try (Session session = sessionFactory.openSession()){
-            results = (List<Review>) session.createQuery(hql).setParameter("id", id).getResultList();
+            results = session.createQuery(hql).setParameter("id", id).getResultList();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get review by restaurant.", e.getMessage());
+            logger.error("Failure to get reviews by userID.", e.getMessage());
         }
-        if(results != null)logger.debug(String.format("Got %s reviews by restaurant.id=%s.", results.size(), id));
+
+        if(results != null)logger.debug(String.format("Got %s reviews by userId=%s.", results.size(), id));
         return results;
     }
 }

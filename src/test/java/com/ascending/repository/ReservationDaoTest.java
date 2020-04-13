@@ -30,27 +30,29 @@ public class ReservationDaoTest {
     private UserDao userDao;
     @Autowired
     private ReservationDao reservationDao;
-    private Reservation reservation;
-    private Long id;
 
+    private Restaurant restaurant;
+    private User user;
+    private Reservation reservation;
+    private ZonedDateTime reservationTime = ZonedDateTime.now();
+    private int numPersons = 2;
+
+    //Todo reset ReviewDaoTest without seeding data
     @Before
     public void setUp(){
         logger.debug("Setting up before test ...");
-        id = null;
-        ZonedDateTime reservationTime = ZonedDateTime.now();
-        int numPersons = 2;
-        Restaurant restaurant = restaurantDao.getRestaurantById(1L);
-        User user = userDao.getUserByNameOrEmail("Han");
+
+        restaurant = restaurantDao.getRestaurantById(1L);
+        user = userDao.getUserByNameOrEmail("Han");
         reservation = new Reservation(reservationTime, numPersons, restaurant, user);
         reservation = reservationDao.save(reservation);
-        id = reservation.getId();
-        Assert.assertNotNull(id);
+        Assert.assertNotNull(reservation.getId());
     }
 
     @After
     public void tearDown(){
         logger.debug("Tearing down after test ...");
-        if(id != null)Assert.assertTrue(reservationDao.deleteById(id));
+        if(reservation.getId() != null)Assert.assertTrue(reservationDao.deleteById(reservation.getId()));
     }
 
     @Test
@@ -61,17 +63,27 @@ public class ReservationDaoTest {
         Assert.assertEquals(reservedStatus, reservationDao.update(reservation).getReservedStatus());
     }
 
+    //Todo Modify Assert.assertEquals(reservation.getId(), reservations.get(lastIndex).getId());
     @Test
     public void getReservations(){
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         List<Reservation> reservations = reservationDao.getReservations();
         int lastIndex = reservations.size() - 1 ;
-        Assert.assertEquals(id, reservations.get(lastIndex).getId());
+        Assert.assertTrue(reservations.size() > 0);
+        Assert.assertEquals(reservation.getId(), reservations.get(lastIndex).getId());
     }
 
     @Test
     public void getReservationById(){
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
-        Assert.assertEquals(id, reservationDao.getReservationById(id).getId());
+        Assert.assertEquals(reservation.getId(), reservationDao.getReservationById(reservation.getId()).getId());
+    }
+
+    @Test
+    public void getReservationsByUserId(){
+        logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
+        List<Reservation> reservations = reservationDao.getReservationsByUserId(user.getId());
+        Assert.assertTrue(reservations.size() > 0);
+        reservations.forEach(e -> Assert.assertEquals(user.getId(),e.getUserId()));
     }
 }

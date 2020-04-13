@@ -31,47 +31,55 @@ public class ReviewDaoTest {
     private UserDao userDao;
 
     private Review review;
-    private Long id;
+    private User user;
     private Restaurant restaurant;
 
+    //Todo reset ReviewDaoTest without seeding data
     @Before
     public void setUp(){
         logger.debug("Setting up before test ...");
-        id = null;
         restaurant = restaurantDao.getRestaurantById(1L);
-        User user = userDao.getUserByNameOrEmail("Han");
+        user = userDao.getUserByNameOrEmail("Han");
         review = new Review(restaurant, user);
         review = reviewDao.save(review);
-        id = review.getId();
-        Assert.assertNotNull(id);
+        Assert.assertNotNull(review.getId());
     }
 
     @After
     public void tearDown(){
         logger.debug("Tearing down after test ...");
-        if (id != null)Assert.assertTrue(reviewDao.deleteById(id));
+        if (review.getId() != null)Assert.assertTrue(reviewDao.deleteById(review.getId()));
     }
 
+    //Todo Modify size() - 1
     @Test
     public void getReviews(){
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         List<Review> reviews = reviewDao.getReviews();
         Assert.assertTrue(reviews.size() >= 1);
-        Assert.assertEquals(id, reviews.get(reviews.size() - 1).getId());
+        Assert.assertEquals(review.getId(), reviews.get(reviews.size() - 1).getId());
     }
 
     @Test
     public void getReviewById(){
 //        logger.debug(">>>>>>>>>>>" +  reviewDao.getReviewById(1L).toString());
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
-        Assert.assertEquals(id, reviewDao.getReviewById(id).getId());
+        Assert.assertEquals(review.getId(), reviewDao.getReviewById(review.getId()).getId());
     }
 
+//    @Test
+//    public void getReviewsByRestaurantId(){
+//        logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
+//        List<Review> reviews = reviewDao.getReviewsByRestaurantId(restaurant.getId());
+//        Assert.assertTrue(reviews.size() >= 1);
+//        Assert.assertEquals(id, reviews.get(reviews.size() - 1).getId());
+//    }
+
     @Test
-    public void getReviewsByRestaurantId(){
+    public void getReviewsByUserId(){
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
-        List<Review> reviews = reviewDao.getReviewsByRestaurantId(restaurant.getId());
-        Assert.assertTrue(reviews.size() >= 1);
-        Assert.assertEquals(id, reviews.get(reviews.size() - 1).getId());
+        List<Review> reviews = reviewDao.getReviewsByUserId(user.getId());
+        Assert.assertTrue(reviews.size() > 0);
+        reviews.forEach(e -> Assert.assertEquals(user.getId(),e.getUserID()));
     }
 }

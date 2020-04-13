@@ -9,5 +9,6 @@ public interface ReviewDao {
     boolean deleteById(Long id);
     List<Review> getReviews();
     Review getReviewById(Long id);
-    List<Review> getReviewsByRestaurantId(Long id);
+//    List<Review> getReviewsByRestaurantId(Long id);
+    List<Review> getReviewsByUserId(Long id);
 }

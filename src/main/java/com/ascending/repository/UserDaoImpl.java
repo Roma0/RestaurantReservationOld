@@ -59,12 +59,18 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean deleteById(Long id) {
         Transaction transaction = null;
-        String hql = "DELETE User AS u WHERE u.id = :id";
+        String hql1 = "UPDATE Reservation AS r SET r.user.id = NULL WHERE r.user.id = :id";
+        String hql2 = "UPDATE Review AS r SET r.user.id = NULL WHERE r.user.id = :id";
+        String hql3 = "DELETE User AS u WHERE u.id = :id";
         int result = 0;
+        int updateReservations = 0;
+        int updateReviews = 0;
 
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            Query<User> query = session.createQuery(hql);
+            updateReservations = session.createQuery(hql1).setParameter("id", id).executeUpdate();
+            updateReviews = session.createQuery(hql2).setParameter("id", id).executeUpdate();
+            Query<User> query = session.createQuery(hql3);
             query.setParameter("id", id);
             result = query.executeUpdate();
             transaction.commit();
@@ -75,7 +81,8 @@ public class UserDaoImpl implements UserDao {
         }
 
         if (result >= 1){
-            logger.debug(String.format("Deleted the user by id=%s.", id));
+            logger.debug(String.format("Deleted the user by id=%s. Updated %s reservations and %s reviews.",
+                    id, updateReservations, updateReviews));
             return true;
         }
         return false;

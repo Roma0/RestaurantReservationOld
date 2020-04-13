@@ -10,4 +10,5 @@ public interface ReservationDao {
     boolean deleteById(Long id);
     List<Reservation> getReservations();
     Reservation getReservationById(Long id);
+    List<Reservation> getReservationsByUserId(Long id);
 }

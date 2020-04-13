@@ -24,27 +24,25 @@ public class UserDaoTest {
     @Autowired
     private UserDao userDao;
 
-    private Long id;
     private String email;
     private String name;
     private User user;
 
-
+    //Todo reset ReviewDaoTest without seeding data
     @Before
     public void setUp(){
         logger.debug("Setting up before the testing ...");
         name  = "yd";
         email = "yd13_0@163.com";
         user  = new User(name, email);
-        id = null;
-        id = userDao.save(user).getId();
-        Assert.assertNotNull(id);
+        user = userDao.save(user);
+        Assert.assertNotNull(user.getId());
     }
 
     @After
     public void tearDown(){
         logger.debug("Tearing down after the testing ...");
-        if(id != null)Assert.assertTrue(userDao.deleteById(id));
+        if(user.getId() != null)Assert.assertTrue(userDao.deleteById(user.getId()));
     }
 
     @Test
@@ -55,12 +53,13 @@ public class UserDaoTest {
         Assert.assertEquals(phone, userDao.update(user).getPhone());
     }
 
+    //Todo Modify size() - 1
     @Test
     public void getUsers(){
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         List<User> users = userDao.getUsers();
         int size = users.size();
-        Assert.assertEquals(id, users.get(size - 1).getId());
+        Assert.assertEquals(user.getId(), users.get(size - 1).getId());
     }
 
     @Test

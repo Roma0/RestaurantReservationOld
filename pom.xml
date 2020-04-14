@@ -72,7 +72,8 @@
           <artifactId>flyway-maven-plugin</artifactId>
           <version>6.1.4</version>
           <configuration>
-            <url>jdbc:postgresql://localhost:5431/test_dev</url>
+            <driver>org.postgresql.Driver</driver>
+            <url>jdbc:postgresql://localhost:5431/${db.name}</url>
             <user>admin</user>
             <password>password</password>
             <schemas>

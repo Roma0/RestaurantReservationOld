@@ -21,20 +21,19 @@ public class UserDaoTest {
     public String className = this.getClass().getName().replaceAll("Test$", "");
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private UserDao userDao;
-
-    private String email;
-    private String name;
     private User user;
+    private String userName = "Han";
+    private String email = "hanwang@gmail.com";
+    private String rawPassword = "123456789";
 
-    //Todo reset ReviewDaoTest without seeding data
     @Before
     public void setUp(){
         logger.debug("Setting up before the testing ...");
-        name  = "yd";
-        email = "yd13_0@163.com";
-        user  = new User(name, email);
+        user  = new User(userName, email);
+        user.setPassword(rawPassword);
         user = userDao.save(user);
         Assert.assertNotNull(user.getId());
     }
@@ -65,16 +64,14 @@ public class UserDaoTest {
     @Test
     public void getUserByNameOrEmail(){
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
-        Assert.assertEquals(name, userDao.getUserByNameOrEmail(name).getName());
+        Assert.assertEquals(userName, userDao.getUserByNameOrEmail(userName).getName());
         Assert.assertEquals(email, userDao.getUserByNameOrEmail(email).getEmail());
     }
 
     @Test
     public void getUserByCredential(){
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
-        user.setPassword("123456789");
-        String password = userDao.update(user).getPassword();
-        Assert.assertEquals(name, userDao.getUserByCredential(name, password).getName());
-        Assert.assertEquals(email, userDao.getUserByCredential(email, password).getEmail());
+        Assert.assertEquals(userName, userDao.getUserByCredential(userName, user.getPassword()).getName());
+        Assert.assertEquals(email, userDao.getUserByCredential(email, user.getPassword()).getEmail());
     }
 }

@@ -6,6 +6,7 @@ import com.ascending.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.junit.*;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +16,20 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AppInitializer.class)
 public class HibernateMappingTest {
+    @Rule
+    public TestName testName = new TestName();
+    public String className = this.getClass().getName().replaceAll("Test$", "");
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Test
     public void mappingRestaurantTest(){
-        logger.debug("Do the Restaurants table mapping...");
+        logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         String hql = "FROM Restaurant";
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Reservation> query = session.createQuery(hql);
-            Assert.assertTrue(query.getResultList().size() > 0);
+            Assert.assertTrue(query.getResultList().size() >= 0);
+            session.close();
         }catch (Exception e){
             logger.error(e.getMessage());
         }
@@ -31,11 +37,12 @@ public class HibernateMappingTest {
 
     @Test
     public void mappingUserTest(){
-        logger.debug("Do the Users table mapping...");
+        logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         String hql = "FROM User";
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Reservation> query = session.createQuery(hql);
-            Assert.assertTrue(query.getResultList().size() > 0);
+            Assert.assertTrue(query.getResultList().size() >= 0);
+            session.close();
         }catch (Exception e){
             logger.error(e.getMessage());
         }
@@ -43,11 +50,12 @@ public class HibernateMappingTest {
 
     @Test
     public void mappingReservationTest(){
-        logger.debug("Do the Reservations table mapping...");
+        logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         String hql = "FROM Reservation";
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Reservation> query = session.createQuery(hql);
-            Assert.assertTrue(query.getResultList().size() > 0);
+            Assert.assertTrue(query.getResultList().size() >= 0);
+            session.close();
         }catch (Exception e){
             logger.error(e.getMessage());
         }
@@ -55,11 +63,12 @@ public class HibernateMappingTest {
 
     @Test
     public void mappingReviewTest(){
-        logger.debug("Do the Reviews table mapping...");
+        logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         String hql = "FROM Review";
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Reservation> query = session.createQuery(hql);
-            Assert.assertTrue(query.getResultList().size() > 0);
+            Assert.assertTrue(query.getResultList().size() >= 0);
+            session.close();
         }catch (Exception e){
             logger.error(e.getMessage());
         }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -27,19 +28,27 @@ public class ReviewDaoTest {
     private ReviewDao reviewDao;
     @Autowired
     private RestaurantDao restaurantDao;
+    private Restaurant restaurant;
+    private String restaurantName = "Agora Tysons2";
+    private String restaurantAddress = "7911 Westpark Dr, McLean, VA 22102";
+    private LocalTime openTime = LocalTime.of(10,0);
+    private LocalTime closeTime = LocalTime.of(21,30);
+
     @Autowired
     private UserDao userDao;
+    private User user;
+    private String userName = "Han";
+    private String email = "hanwang@gmail.com";
 
     private Review review;
-    private User user;
-    private Restaurant restaurant;
 
-    //Todo reset ReviewDaoTest without seeding data
     @Before
     public void setUp(){
         logger.debug("Setting up before test ...");
-        restaurant = restaurantDao.getRestaurantById(1L);
-        user = userDao.getUserByNameOrEmail("Han");
+        restaurant = new Restaurant(restaurantName, restaurantAddress, openTime, closeTime);
+        restaurant = restaurantDao.save(restaurant);
+        user = new User(userName, email);
+        user = userDao.save(user);
         review = new Review(restaurant, user);
         review = reviewDao.save(review);
         Assert.assertNotNull(review.getId());
@@ -49,6 +58,8 @@ public class ReviewDaoTest {
     public void tearDown(){
         logger.debug("Tearing down after test ...");
         if (review.getId() != null)Assert.assertTrue(reviewDao.deleteById(review.getId()));
+        if (user.getId() != null) Assert.assertTrue(userDao.deleteById(user.getId()));
+        if (restaurant.getId() != null) Assert.assertTrue(restaurantDao.cascadeDeleteById(restaurant.getId()));
     }
 
     //Todo Modify size() - 1
@@ -62,7 +73,6 @@ public class ReviewDaoTest {
 
     @Test
     public void getReviewById(){
-//        logger.debug(">>>>>>>>>>>" +  reviewDao.getReviewById(1L).toString());
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         Assert.assertEquals(review.getId(), reviewDao.getReviewById(review.getId()).getId());
     }

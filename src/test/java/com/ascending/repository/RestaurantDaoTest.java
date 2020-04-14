@@ -38,19 +38,24 @@ public class RestaurantDaoTest {
 
     @Autowired
     private UserDao userDao;
+    private User user;
+    private String userName = "Han";
+    private String email = "hanwang@gmail.com";
+
     @Autowired
     private ReservationDao reservationDao;
-    @Autowired
-    private ReviewDao reviewDao;
-    private User user;
     private ZonedDateTime reservedTime = ZonedDateTime.now();
     private int numPerson = 2;
+
+    @Autowired
+    private ReviewDao reviewDao;
+
 
 
     @Before
     public void setUp(){
         logger.debug("Setting up before the testing ...");
-        user = new User("testUserName", "test@email.com");
+        user = new User(userName, email);
         restaurant = new Restaurant(restaurantName, restaurantAddress,
                 openTime, closeTime);
         restaurant = restaurantDao.save(restaurant);

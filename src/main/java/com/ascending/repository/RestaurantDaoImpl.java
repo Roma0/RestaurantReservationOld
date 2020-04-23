@@ -29,12 +29,14 @@ public class RestaurantDaoImpl implements RestaurantDao {
             session.close();
         }
         catch (Exception e){
+            logger.error("Failure to save restaurant. {}", e.getMessage());
             if(transaction != null)transaction.rollback();
-            logger.error("Failure to save restaurant.", e.getMessage());
+        }
+        finally {
+            if (result != null) logger.debug(String.format("Inserted restaurant %s.", result.toString()));
+            return result;
         }
 
-        if (result != null) logger.debug(String.format("Inserted restaurant %s.", result.toString()));
-        return result;
     }
 
     @Override
@@ -50,12 +52,14 @@ public class RestaurantDaoImpl implements RestaurantDao {
             session.close();
         }
         catch (Exception e){
+            logger.error("Failure to update restaurant. {}", e.getMessage());
             if(transaction != null)transaction.rollback();
-            logger.error("Failure to update restaurant.", e.getMessage());
+        }
+        finally {
+            if (result != null) logger.debug(String.format("Updated restaurant %s.", result));
+            return result;
         }
 
-        if (result != null) logger.debug(String.format("Updated restaurant %s.", result));
-        return result;
     }
 
     @Override
@@ -76,7 +80,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
         }
         catch (Exception e){
             if(transaction != null)transaction.rollback();
-            logger.error("Failure to delete restaurant.", e.getMessage());
+            logger.error("Failure to delete restaurant. {}", e.getMessage());
         }
 
         if(result) logger.debug(String.format("Completed cascade deletion from table: restaurants, reservations, reviews by restaurant.id=%s.",
@@ -95,7 +99,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             session.close();
         }
         catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("Failure to get all restaurants. {}", e.getMessage());
         }
 
         if (results != null)logger.debug(String.format("Got %s restaurants.", results.size()));
@@ -110,7 +114,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             result = session.find(Restaurant.class, id);
             session.close();
         }catch (Exception e){
-            logger.error("Failure to find restaurant.", e.getMessage());
+            logger.error("Failure to find restaurant. {}", e.getMessage());
         }
 
         if (result != null) logger.debug(String.format("Got %s restaurant by id=%s.", result, id));
@@ -128,7 +132,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             results = query.getResultList();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to find restaurant.", e.getMessage());
+            logger.error("Failure to find restaurant. {}", e.getMessage());
         }
 
         if(results != null)logger.debug(String.format("Got %s reservations by address=%s.", results.size(), address));
@@ -146,7 +150,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             result = query.uniqueResult();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to find restaurant.", e.getMessage());
+            logger.error("Failure to find restaurant.{}", e.getMessage());
         }
 
         if(result != null)logger.debug(String.format("Got restaurant %s by name=%s.", result, name));
@@ -164,7 +168,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             result = query.uniqueResult();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get restaurant with children.", e.getMessage());
+            logger.error("Failure to get restaurant with children. {}", e.getMessage());
         }
 
         if(result != null)logger.debug(String.format("Got restaurant with reservations %s by restaurant.id=%s", result, id));
@@ -182,7 +186,7 @@ public class RestaurantDaoImpl implements RestaurantDao {
             result = query.uniqueResult();
             session.close();
         }catch (Exception e){
-            logger.error(String.format("Failure to get restaurant with id: %s and it's reviews.", id), e.getMessage());
+            logger.error(String.format("Failure to get restaurant with id: %s and it's reviews. %s", id, e.getMessage()));
         }
 
         if(result != null)logger.debug(String.format("Got restaurant with reviews %s by restaurant.id=%s", result, id));

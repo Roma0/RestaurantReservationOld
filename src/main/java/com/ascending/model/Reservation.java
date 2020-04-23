@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.*;
+import java.util.Objects;
 
 
 @Entity
@@ -38,7 +39,6 @@ public class Reservation {
     @Column(name = "created_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private ZonedDateTime createdTime;
 
-    //To add UpdateTimestamp
     @UpdateTimestamp
     @Column(name = "update_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private ZonedDateTime updateTime;
@@ -72,10 +72,6 @@ public class Reservation {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss a z", timezone = "UTC")
     public ZonedDateTime getCreatedTime() {
         return createdTime;
-    }
-
-    public void setCreatedTime(ZonedDateTime createdTime) {
-        this.createdTime = createdTime;
     }
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss a z", timezone = "UTC")
@@ -144,4 +140,24 @@ public class Reservation {
         return str;
     }
 
+    @Override
+    public int hashCode(){
+        return Objects.hash(id, restaurant.getId(), user.getId());
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (o == null || o.getClass() != getClass()) return false;
+        if (o == this) return true;
+        Reservation reservation = (Reservation) o;
+        return reservation.id == id &&
+                reservation.createdTime.equals(createdTime) &&
+                Objects.equals(reservation.updateTime, updateTime) &&
+                Objects.equals(reservation.reservedTime, reservedTime) &&
+                reservation.numPersons == numPersons &&
+                reservation.reservedStatus.equals(reservedStatus) &&
+                reservation.restaurant.getId().equals(restaurant.getId()) &&
+                reservation.user.getId().equals(user.getId());
+
+    }
 }

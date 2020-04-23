@@ -31,11 +31,12 @@ public class ReviewDaoImpl implements ReviewDao {
             transaction.commit();
             session.close();
         }catch (Exception e){
+            logger.error("Failure to save review. {}", e.getMessage());
             if(transaction != null)transaction.rollback();
-            logger.error("Failure to save review.", e.getMessage());
+        }finally {
+            if (result != null)logger.debug(String.format("The review %s was inserted into database.", result));
+            return result;
         }
-        if (result != null)logger.debug(String.format("The review %s was inserted into database.", result));
-        return result;
     }
 
     @Override
@@ -50,15 +51,15 @@ public class ReviewDaoImpl implements ReviewDao {
             transaction.commit();
             session.close();
         }catch (Exception e){
+            logger.error("Failure to delete review. {}", e.getMessage());
             if (transaction != null)transaction.rollback();
-            logger.error("Failure to delete review.", e.getMessage());
+        }finally {
+            if(result >= 1){
+                logger.debug(String.format("Deleted the review by id=%s.", id));
+                return true;
+            }
+            return false;
         }
-
-        if(result >= 1){
-            logger.debug(String.format("Deleted the review by id=%s.", id));
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -71,7 +72,7 @@ public class ReviewDaoImpl implements ReviewDao {
             results = query.getResultList();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get reviews.", e.getMessage());
+            logger.error("Failure to get reviews. {}", e.getMessage());
         }
         if(results != null) logger.debug(String.format("Got all %s reviews.", results.size()));
         return results;
@@ -86,7 +87,7 @@ public class ReviewDaoImpl implements ReviewDao {
             result = (Review) session.createQuery(hql).setParameter("id", id).uniqueResult();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get review", e.getMessage());
+            logger.error("Failure to get review. {}", e.getMessage());
         }
         if(result != null) logger.debug(String.format("Got the review %s by id=%s.", result, id));
         return result;
@@ -116,7 +117,7 @@ public class ReviewDaoImpl implements ReviewDao {
             results = session.createQuery(hql).setParameter("id", id).getResultList();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get reviews by userID.", e.getMessage());
+            logger.error("Failure to get reviews by userID. {}", e.getMessage());
         }
 
         if(results != null)logger.debug(String.format("Got %s reviews by userId=%s.", results.size(), id));

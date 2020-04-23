@@ -32,11 +32,12 @@ public class ReservationDaoImpl implements ReservationDao{
             session.close();
         }
         catch (Exception e){
+            logger.error("Failure to save reservation. {}", e.getMessage());
             if(transaction != null)transaction.rollback();
-            logger.error("Failure to save reservation.", e.getMessage());
+        }finally {
+            if (result != null)logger.debug(String.format("The reservation %s was inserted into database.", result));
+            return result;
         }
-        if (result != null)logger.debug(String.format("The reservation %s was inserted into database.", result));
-        return result;
     }
 
     @Override
@@ -51,11 +52,12 @@ public class ReservationDaoImpl implements ReservationDao{
             transaction.commit();
             session.close();
         }catch (Exception e){
+            logger.error("Failure to update reservation. {}", e.getMessage());
             if(transaction != null)transaction.rollback();
-            logger.error("Failure to update reservation.", e.getMessage());
+        }finally {
+            if(result != null)logger.debug(String.format("The reservation %s was updated in database.", result));
+            return result;
         }
-        if(result != null)logger.debug(String.format("The reservation %s was updated in database.", result));
-        return result;
     }
 
     @Override
@@ -72,14 +74,15 @@ public class ReservationDaoImpl implements ReservationDao{
             transaction.commit();
             session.close();
         }catch (Exception e){
+            logger.error("Failure to delete reservation. {}", e.getMessage());
             if(transaction != null)transaction.rollback();
-            logger.error("Failure to delete reservation.", e.getMessage());
+        }finally {
+            if(result >= 1){
+                logger.debug(String.format("Deleted the reservation by id=%s", id));
+                return true;
+            }
+            return false;
         }
-        if(result >= 1){
-            logger.debug(String.format("Deleted the reservation by id=%s", id));
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -92,7 +95,7 @@ public class ReservationDaoImpl implements ReservationDao{
             results = query.getResultList();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get all reservations.", e.getMessage());
+            logger.error("Failure to get all reservations. {}", e.getMessage());
         }
         if (results != null)logger.debug(String.format("Got all %s reservations.", results.size()));
         return results;
@@ -109,7 +112,7 @@ public class ReservationDaoImpl implements ReservationDao{
             result = query.uniqueResult();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get reservation.", e.getMessage());
+            logger.error("Failure to get reservation. {}", e.getMessage());
         }
         if(result != null)logger.debug(String.format("Got reservation %s by id=%s.", result, id));
         return result;
@@ -124,7 +127,7 @@ public class ReservationDaoImpl implements ReservationDao{
             results = session.createQuery(hql).setParameter("id", id).getResultList();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get reservations by userId.", e.getMessage());
+            logger.error("Failure to get reservations by userId. {}", e.getMessage());
         }
         if(results != null)logger.debug(String.format("Got %s reservations by userId=%s.", results.size(), id));
         return results;

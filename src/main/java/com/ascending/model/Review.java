@@ -67,11 +67,11 @@ public class Review {
         this.createdTime = createdTime;
     }
 
+    @JsonProperty("restaurantId")
     public Long getRestaurantId() {
         return restaurant.getId();
     }
 
-    @JsonProperty("restaurantId")
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
     }

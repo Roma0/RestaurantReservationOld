@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -62,13 +63,12 @@ public class ReviewDaoTest {
         if (restaurant.getId() != null) Assert.assertTrue(restaurantDao.cascadeDeleteById(restaurant.getId()));
     }
 
-    //Todo Modify size() - 1
     @Test
     public void getReviews(){
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         List<Review> reviews = reviewDao.getReviews();
         Assert.assertTrue(reviews.size() >= 1);
-        Assert.assertEquals(review.getId(), reviews.get(reviews.size() - 1).getId());
+        Assert.assertEquals(review.getId(), reviews.stream().map(Review::getId).max(Comparator.naturalOrder()).get());
     }
 
     @Test

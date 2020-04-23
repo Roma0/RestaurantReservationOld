@@ -1,0 +1,2 @@
+ALTER TABLE reservations ALTER COLUMN user_id DROP NOT NULL;
+ALTER TABLE reviews ALTER COLUMN user_id DROP NOT NULL ;

@@ -1,5 +1,6 @@
 package com.ascending.service;
 
+import com.ascending.model.Reservation;
 import com.ascending.model.Restaurant;
 import com.ascending.repository.RestaurantDao;
 import org.slf4j.Logger;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
@@ -34,4 +37,12 @@ public class RestaurantService {
     public Restaurant getRestaurantWithReservations(Long id){return restaurantDao.getRestaurantWithReservations(id);}
 
     public Restaurant getRestaurantWithReviews(Long id){return restaurantDao.getRestaurantWithReviews(id);}
+
+    public Restaurant getRestaurantWithPendingReservationsById(Long id){
+        Restaurant restaurant = restaurantDao.getRestaurantWithReservations(id);
+        Set<Reservation> pendingReservations = restaurant.getReservations().stream()
+                .filter(e -> e.getReservedStatus() == Reservation.ReservedStatus.PENDING).collect(Collectors.toSet());
+        restaurant.setReservations(pendingReservations);
+        return restaurant;
+    }
 }

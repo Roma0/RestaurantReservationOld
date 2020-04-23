@@ -27,14 +27,15 @@ public class UserDaoImpl implements UserDao {
             session.save(user);
             result = user;
             transaction.commit();
-            session.close();
+//            session.close();
         }
         catch (Exception e){
+            logger.error("Failure to save user. {}", e.getMessage());
             if(transaction != null)transaction.rollback();
-            logger.error("Failure to save user.", e.getMessage());
+        } finally {
+            if(result != null)logger.debug(String.format("The user %s was inserted into table.", result));
+            return result;
         }
-        if(result != null)logger.debug(String.format("The user %s was inserted into table.", result));
-        return result;
     }
 
     @Override
@@ -49,11 +50,12 @@ public class UserDaoImpl implements UserDao {
             transaction.commit();
             session.close();
         }catch (Exception e){
+            logger.error("Failure to update user. {}", e.getMessage());
             if(transaction != null)transaction.rollback();
-            logger.error("Failure to update user.", e.getMessage());
+        }finally {
+            if(result != null)logger.debug(String.format("The user %s was updated in database.", result));
+            return result;
         }
-        if(result != null)logger.debug(String.format("The user %s was updated in database.", result));
-        return result;
     }
 
     @Override
@@ -76,16 +78,16 @@ public class UserDaoImpl implements UserDao {
             transaction.commit();
             session.close();
         } catch (Exception e) {
+            logger.error("Failure to delete user. {}", e.getMessage());
             if (transaction != null) transaction.rollback();
-            logger.error("Failure to delete user.", e.getMessage());
+        }finally {
+            if (result >= 1){
+                logger.debug(String.format("Deleted the user by id=%s. Updated %s reservations and %s reviews.",
+                        id, updateReservations, updateReviews));
+                return true;
+            }
+            return false;
         }
-
-        if (result >= 1){
-            logger.debug(String.format("Deleted the user by id=%s. Updated %s reservations and %s reviews.",
-                    id, updateReservations, updateReviews));
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -97,7 +99,7 @@ public class UserDaoImpl implements UserDao {
             results = query.getResultList();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get users.", e.getMessage());
+            logger.error("Failure to get users. {}", e.getMessage());
         }
 
         if(results != null)logger.debug(String.format("Got all %s users.", results.size()));
@@ -116,7 +118,7 @@ public class UserDaoImpl implements UserDao {
             result = query.uniqueResult();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get the user by nameOrEmail.", e.getMessage());
+            logger.error("Failure to get the user by nameOrEmail. {}", e.getMessage());
         }
         if (result != null) logger.debug(String.format("Got the user %s by nameOrEmail=%s.", result, nameOrEmail));
         return result;
@@ -135,7 +137,7 @@ public class UserDaoImpl implements UserDao {
             result = query.uniqueResult();
             session.close();
         }catch (Exception e){
-            logger.error("Failure to get the user by credential.", e.getMessage());
+            logger.error("Failure to get the user by credential. {}", e.getMessage());
         }
         if (result != null) {
             logger.debug(

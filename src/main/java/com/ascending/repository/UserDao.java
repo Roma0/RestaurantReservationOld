@@ -11,4 +11,5 @@ public interface UserDao {
     List<User> getUsers();
     User getUserByNameOrEmail(String nameOrEmail);
     User getUserByCredential(String nameOrEmail, String password);
+    //Todo add method joint fetch Reviews or Reservations
 }

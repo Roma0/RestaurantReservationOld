@@ -25,7 +25,7 @@ import java.util.Map;
 public class UserServiceTest {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    //Todo
+    //Todo UserServiceTest
     @Autowired
     private UserService userService;
     private User user;
@@ -59,13 +59,13 @@ public class UserServiceTest {
         Assert.assertNotNull(reservation.getId());
     }
 
+    //Todo getReservationsOrReviewsByUserNameOrEmail
     @Test
     public void getReservationsOrReviewsByUserNameOrEmail(){
         String childrenType1 = "reservation";
 //        String childrenType2 = "review";
         Map<String, Object> userReservations = userService.getReservationsOrReviewsByUserNameOrEmail(userName, childrenType1);
         User user = (User)userReservations.get("user");
-//        logger.debug(String.format(">>>>>>>see user %s", user));
         Assert.assertEquals(userName, user.getName());
     }
 }

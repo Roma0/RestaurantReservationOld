@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Comparator;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -52,13 +53,12 @@ public class UserDaoTest {
         Assert.assertEquals(phone, userDao.update(user).getPhone());
     }
 
-    //Todo Modify size() - 1
     @Test
     public void getUsers(){
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         List<User> users = userDao.getUsers();
         int size = users.size();
-        Assert.assertEquals(user.getId(), users.get(size - 1).getId());
+        Assert.assertEquals(user.getId(), users.stream().map(User::getId).max(Comparator.naturalOrder()).get());
     }
 
     @Test

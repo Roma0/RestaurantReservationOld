@@ -16,8 +16,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AppInitializer.class)
@@ -77,13 +79,13 @@ public class RestaurantDaoTest {
         Assert.assertEquals(phone, restaurantDao.update(restaurant).getPhone());
     }
 
-    //Todo Modify size() - 1
     @Test
     public void getRestaurants(){
         logger.debug(String.format("Testing %s for '%s()' method.", className, testName.getMethodName()));
         List<Restaurant> restaurants = restaurantDao.getRestaurants();
         int size = restaurants.size();
-        Assert.assertEquals(restaurant.getId(), restaurants.get(size - 1).getId());
+        Assert.assertEquals(restaurant.getId(), restaurants.stream()
+                .map(e -> e.getId()).collect(Collectors.maxBy(Comparator.naturalOrder())).get());
     }
 
     @Test

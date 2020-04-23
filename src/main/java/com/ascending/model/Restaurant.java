@@ -114,6 +114,10 @@ public class Restaurant {
         return reservations;
     }
 
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
     public Set<Review> getReviews() {
         try {
             int size = reviews.size();
@@ -121,6 +125,10 @@ public class Restaurant {
             return null;
         }
         return reviews;
+    }
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
     }
 
     @Override

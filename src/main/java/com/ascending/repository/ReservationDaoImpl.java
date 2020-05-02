@@ -9,6 +9,7 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.ZoneId;
@@ -18,7 +19,8 @@ import java.util.List;
 @Repository
 public class ReservationDaoImpl implements ReservationDao{
     private Logger logger = LoggerFactory.getLogger(getClass());
-    private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Override
     public Reservation save(Reservation reservation) {

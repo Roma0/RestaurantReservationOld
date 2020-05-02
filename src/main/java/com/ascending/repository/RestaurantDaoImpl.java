@@ -6,6 +6,7 @@ import org.hibernate.*;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
@@ -14,7 +15,8 @@ import java.util.List;
 @Repository
 public class RestaurantDaoImpl implements RestaurantDao {
     private Logger logger = LoggerFactory.getLogger(getClass());
-    private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Override
     public Restaurant save(Restaurant restaurant) {

@@ -10,6 +10,7 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,7 +18,8 @@ import java.util.List;
 @Repository
 public class ReviewDaoImpl implements ReviewDao {
     private Logger logger = LoggerFactory.getLogger(getClass());
-    private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Override
     public Review save(Review review) {
@@ -67,7 +69,7 @@ public class ReviewDaoImpl implements ReviewDao {
         String hql = "FROM Review";
         List<Review> results = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()){
+        try (Session session = sessionFactory.openSession()){
             Query<Review> query = session.createQuery(hql);
             results = query.getResultList();
             session.close();

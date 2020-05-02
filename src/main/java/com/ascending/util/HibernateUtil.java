@@ -8,9 +8,10 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 
 import java.util.Properties;
-
+@org.springframework.context.annotation.Configuration
 public class HibernateUtil {
     private static SessionFactory sessionFactory;
     private static Logger logger = LoggerFactory.getLogger(HibernateUtil.class);
@@ -21,6 +22,7 @@ public class HibernateUtil {
     -Ddatabase.user=admin
     -Ddatabase.password=password
     */
+    @Bean
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {

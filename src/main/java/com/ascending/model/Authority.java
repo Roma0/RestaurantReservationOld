@@ -1,10 +1,8 @@
 package com.ascending.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.persistence.*;
 
 @Entity
@@ -15,8 +13,9 @@ public class Authority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "role")
-    private String role;
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinColumn(name = "role", referencedColumnName = "role")
+    private Role role;
 
     @Column(name = "allowed_resource")
     private String isAllowedResource;
@@ -41,11 +40,12 @@ public class Authority {
         this.id = id;
     }
 
+    @JsonProperty("role")
     public String getRole() {
-        return role;
+        return role.getRole();
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

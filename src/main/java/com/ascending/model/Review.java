@@ -7,11 +7,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.*;
 
 @Entity
 @Table(name = "Reviews")
-public class Review {
+public class Review implements Serializable{
 
     public Review(){};
 

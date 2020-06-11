@@ -6,12 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Set;
 
 @Entity
 @Table(name = "restaurants")
-public class Restaurant {
+public class Restaurant implements Serializable{
 
     public Restaurant(){}
 

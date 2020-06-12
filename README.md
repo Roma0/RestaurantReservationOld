@@ -5,12 +5,14 @@ https://github.com/xchris1015/basketball
 https://github.com/di1025/NationalResortBooking
 https://github.com/cowboybebophan/SneakerShop
 
+## Project Thoughts
+In my leisure time, besides sporting, I'd like delicacies to relieve myself. Retrieving recommended foods and booking popular restaurants is a compulsory course to find the favorite. Then an idea to copy review and reservation function of the Yelp, the bigwigs of these two services, came out.
 ## Description
-This application is developed using Spring Boot, Spring Data, Spring RESTful web services, Maven, PostgreSql, Docker, Amazon SQS, Amazon S3.
+This application is developed in Spring Framework by using Spring boot, Spring data, Hibernate, Reids, Spring RESTful web services, Postman, Maven, PostgreSQL, Docker, Amazon SQS, Amazon S3.
 ## Assumption
 1. Users are provided restaurant information with custom reviews then reserved the restaurant after sign in authorities.
 2. The restaurant information need to be created before searching.
-3. The relation between restaurant and review is "One to Many", the relationship between player and player statistics is "One to One".
+3. The relationship between restaurant and review, restaurant and reservation, user and review, and user and reservation are all "One to Many".
 Approach
 ## Approach
 ## Build Project
